@@ -13,18 +13,23 @@ int main(int argc,char **argv)
   Image image;
   try {
     // Read a file into image object
-    image.read( "ascii-pineapple.jpg" );
+    image.read( "source.jpg" );
 
     cout << "Image Loaded" << endl;
 
     //Get width and height, get maximum RGB value
+    const unsigned char MAX_COLOUR = 255;
+    // Define ASCII chars in order from least 'bright' to most 'bright'
+    char characters[] = {96,94,92,34,44,58,59,73,108,33,105,126,43,95,45,63,93,91,125,123,49,41,40,124,92,92,47,116,102,106,114,120,110,117,118,99,122,88,89,85,74,67,76,81,48,79,90,109,119,113,112,100,98,107,104,97,111,42,35,77,87,38,56,37,66,64,36};
+    Geometry newsize = Geometry(300,300);
+    //Resize image for better image quality
+
+    image.resize(newsize);
     const int IMAGE_W = image.rows();
     const int IMAGE_H = image.columns();
-    const unsigned char MAX_COLOUR = 255;
+    image.display();
 
-    cout << "Image size : " << IMAGE_W << " x " << IMAGE_H << endl;
-    //Fetches colour values of each pixel and prints them
-    cout << "Iterating through brightness" << endl;
+
     for(int y = 0; y<IMAGE_W; y++){
         for(int x = 0; x<IMAGE_H; x++){
             ColorRGB colour = image.pixelColor(x, y);
@@ -33,29 +38,14 @@ int main(int argc,char **argv)
              unsigned char green = colour.green() * MAX_COLOUR;
              unsigned char blue = colour.blue() * MAX_COLOUR;
                 // Brightness algorithm and scaling to ASCII mapping
-             unsigned char brightness = (red + green + blue)/3;
-             unsigned char ascii_scaling = brightness/3;
+             unsigned char brightness(0.2126*red + 0.7152*green + 0.0722*blue);
+             unsigned char ascii_scaling = brightness/4;
 
              //ASCII printing
-             switch(ascii_scaling){
-             case 0 ... 20:
-             cout << '`';
-             break;
-             case 21 ... 40:
-             cout << '^';
-             break;
-             case 41 ... 60:
-             cout << '/';
-             break;
-             case 61 ... 80:
-             cout << ",";
-             break;
+             cout << characters[ascii_scaling];
+             cout << characters[ascii_scaling];
+             cout << characters[ascii_scaling];
 
-
-             default:
-                 cout << ':';
-
-             }
 
 
         }
